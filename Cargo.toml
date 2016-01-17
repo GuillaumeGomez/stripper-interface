@@ -1,0 +1,17 @@
+[package]
+name = "stripper_interface"
+version = "0.0.1"
+authors = ["Guillaume Gomez <guillaume1.gomez@gmail.com>"]
+
+description = "This is the library used by rustdoc-stripper and gir to generate comments files."
+repository = "https://github.com/GuillaumeGomez/stripper-interface"
+license = "Apache-2.0"
+homepage = "https://github.com/GuillaumeGomez/stripper-interface"
+documentation = "https://github.com/GuillaumeGomez/stripper-interface"
+
+readme = "README.md"
+
+keywords = ["rustdoc-stripper", "gir"]
+
+[lib]
+name = "stripper_interface"
