@@ -13,10 +13,9 @@
 // limitations under the License.
 
 use std::cmp::PartialEq;
-use std::fmt::{Display, Formatter, Error};
+use std::fmt::{Debug, Display, Formatter, Error};
 use std::ops::Deref;
-
-use std::fmt::Debug;
+use std::borrow::Borrow;
 
 pub enum EventType {
     Comment(String),
@@ -40,15 +39,6 @@ pub struct TypeStruct {
     pub parent: Option<Box<TypeStruct>>,
     pub name: String,
     pub args: Vec<String>,
-}
-
-impl Debug for TypeStruct {
-    fn fmt(&self, fmt: &mut Formatter) -> Result<(), Error> {
-        match self.parent {
-            Some(ref p) => write!(fmt, "{}|{}:{}:[{:?}]", p, self.name, self.ty, self.args),
-            None => write!(fmt, "{}:{}:[{:?}]", self.name, self.ty, self.args),
-        }
-    }
 }
 
 impl TypeStruct {
@@ -117,13 +107,40 @@ impl Clone for TypeStruct {
     }
 }
 
-impl Display for TypeStruct {
+impl Debug for TypeStruct {
     fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
         let parent = &self.parent;
         match parent {
             &Some(ref p) => write!(f, "{}§{} {}{}", p, self.ty, self.name, self.args.join(" ")),
-            &None => write!(f, "{} {}{}", self.ty, self.name, self.args.join(" ")),
+            _ => write!(f, "{} {}{}", self.ty, self.name, self.args.join(" ")),
         }
+    }
+}
+
+fn sub_call(f: &mut Formatter, t: &TypeStruct, is_parent: bool) -> Result<(), Error> {
+    if t.ty == Type::Macro && is_parent == true {
+        match t.parent {
+            Some(ref p) => sub_call(f, p.borrow(), true),
+            _ => Ok(()),
+        }
+    } else {
+        match t.parent {
+            Some(ref p) => {
+                try!(sub_call(f, p.borrow(), true));
+                if is_parent {
+                    write!(f, "{} {}{}§", t.ty, t.name, t.args.join(" "))
+                } else {
+                    write!(f, "{} {}{}", t.ty, t.name, t.args.join(" "))
+                }
+            },
+            _ => write!(f, "{} {}{}", t.ty, t.name, t.args.join(" ")),
+        }
+    }
+}
+
+impl Display for TypeStruct {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+        sub_call(f, self, false)
     }
 }
 
