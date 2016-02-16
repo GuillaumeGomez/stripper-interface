@@ -117,6 +117,14 @@ impl Debug for TypeStruct {
     }
 }
 
+fn show(f: &mut Formatter, t: &TypeStruct, is_parent: bool) -> Result<(), Error> {
+    if is_parent {
+        write!(f, "{} {}{}§", t.ty, t.name, t.args.join(" "))
+    } else {
+        write!(f, "{} {}{}", t.ty, t.name, t.args.join(" "))
+    }
+}
+
 fn sub_call(f: &mut Formatter, t: &TypeStruct, is_parent: bool) -> Result<(), Error> {
     if t.ty == Type::Macro && is_parent == true {
         match t.parent {
@@ -127,13 +135,9 @@ fn sub_call(f: &mut Formatter, t: &TypeStruct, is_parent: bool) -> Result<(), Er
         match t.parent {
             Some(ref p) => {
                 try!(sub_call(f, p.borrow(), true));
-                if is_parent {
-                    write!(f, "{} {}{}§", t.ty, t.name, t.args.join(" "))
-                } else {
-                    write!(f, "{} {}{}", t.ty, t.name, t.args.join(" "))
-                }
+                show(f, t, is_parent)
             },
-            _ => write!(f, "{} {}{}", t.ty, t.name, t.args.join(" ")),
+            _ => show(f, t, is_parent),
         }
     }
 }
