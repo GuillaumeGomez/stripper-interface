@@ -1,4 +1,4 @@
-// Copyright 2015 Gomez Guillaume
+// Copyright 2016 Gomez Guillaume
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub use self::consts::{
-    FILE,
-    FILE_COMMENT,
+use consts::{
     MOD_COMMENT,
+    FILE_COMMENT,
+    FILE,
     END_INFO,
 };
-pub use self::types::{
-    EventType,
-    Type,
-    TypeStruct,
-};
-pub use self::utils::{
-    write_comment,
-    write_file,
-    write_file_comment,
-};
+use types::TypeStruct;
 
-mod consts;
-mod types;
-mod utils;
+pub fn write_comment(id: &TypeStruct, comment: &str,
+                     ignore_macro: bool) -> String {
+    if ignore_macro {
+        format!("{}{}{}\n{}", MOD_COMMENT, id, END_INFO, comment)
+    } else {
+        format!("{}{:?}{}\n{}", MOD_COMMENT, id, END_INFO, comment)
+    }
+}
+
+pub fn write_file_comment(comment: &str) -> String {
+    format!("{}{}\n{}", FILE_COMMENT, END_INFO, comment)
+}
+
+pub fn write_file(file: &str) -> String {
+    format!("{}{}{}", FILE, file, END_INFO)
+}
