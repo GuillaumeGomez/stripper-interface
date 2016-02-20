@@ -16,6 +16,7 @@ pub use self::consts::{
     FILE,
     FILE_COMMENT,
     MOD_COMMENT,
+    END_INFO,
 };
 pub use self::types::{
     EventType,

@@ -1,6 +1,6 @@
 [package]
 name = "stripper_interface"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Guillaume Gomez <guillaume1.gomez@gmail.com>"]
 
 description = "This is the library used by rustdoc-stripper and gir to generate comments files."

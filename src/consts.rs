@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub const MOD_COMMENT : &'static str = "=| ";
-pub const FILE_COMMENT : &'static str = "=/ ";
-pub const FILE : &'static str = "=! ";
+pub const MOD_COMMENT : &'static str = "<!-- ";
+pub const FILE_COMMENT : &'static str = "<!-- file_comment ";
+pub const FILE : &'static str = "<!-- file ";
+pub const END_INFO : &'static str = " -->";

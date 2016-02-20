@@ -68,6 +68,22 @@ impl TypeStruct {
             parent: None,
         }
     }
+
+    pub fn get_depth(&self, ignore_macros: bool) -> usize {
+        fn recur(ty: &Option<Box<TypeStruct>>, is_parent: bool, ignore_macros: bool) -> usize {
+            match ty {
+                &Some(ref t) => {
+                    if ignore_macros && is_parent && t.ty == Type::Macro {
+                        recur(&t.parent, true, ignore_macros)
+                    } else {
+                        recur(&t.parent, true, ignore_macros) + 1
+                    }
+                },
+                _ => 0,
+            }
+        }
+        recur(&self.parent, false, ignore_macros)
+    }
 }
 
 impl PartialEq for TypeStruct {
